@@ -24,6 +24,13 @@ namespace Fretefy.Test.Infra.EntityFramework
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CidadeMap());
+            modelBuilder.ApplyConfiguration(new RegiaoMap());
+            modelBuilder.ApplyConfiguration(new RegiaoCidadeMap());
         }
+
+        // DbSets
+        public DbSet<Domain.Entities.Cidade> Cidades { get; set; }
+        public DbSet<Domain.Entities.Regiao> Regioes { get; set; }
+        public DbSet<Domain.Entities.RegiaoCidade> RegiaoCidades { get; set; }
     }
 }

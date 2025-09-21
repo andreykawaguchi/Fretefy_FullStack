@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Fretefy.Test.Infra.EntityFramework.Migrations
+namespace Fretefy.Test.Infra.Migrations
 {
     [DbContext(typeof(TestDbContext))]
     partial class TestDbContextModelSnapshot : ModelSnapshot
@@ -34,171 +34,268 @@ namespace Fretefy.Test.Infra.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cidade");
+                    b.ToTable("Cidades");
 
                     b.HasData(
                         new
                         {
-                            Id = new Guid("afc12ff5-eacd-420a-835a-69e9b3b7821c"),
+                            Id = new Guid("cc229847-14b4-44c8-9252-a308111800c5"),
                             Nome = "Rio Branco",
                             UF = "AC"
                         },
                         new
                         {
-                            Id = new Guid("a3fc3b39-3c3c-4a58-8c50-fdd19209777f"),
+                            Id = new Guid("c0744758-8d22-4215-9e00-c66f237c5503"),
                             Nome = "Maceió",
                             UF = "AL"
                         },
                         new
                         {
-                            Id = new Guid("ec8390ca-f9a5-4a9e-9654-9405ccbabc7c"),
+                            Id = new Guid("9c66d73f-b7ef-4f77-bfdb-4616abdeca83"),
                             Nome = "Macapá",
                             UF = "AP"
                         },
                         new
                         {
-                            Id = new Guid("596df90c-e617-45cb-be33-826801519e46"),
+                            Id = new Guid("cfdf22a5-c023-4de9-b548-7455ca01f3d3"),
                             Nome = "Manaus",
                             UF = "AM"
                         },
                         new
                         {
-                            Id = new Guid("784647e2-5430-459e-898b-4c915ee4b412"),
+                            Id = new Guid("1de92ab6-45fb-41ac-9e3b-eb74e8d04fc3"),
                             Nome = "Salvador",
                             UF = "BA"
                         },
                         new
                         {
-                            Id = new Guid("e3dcbced-4326-4007-94df-c33f8c77a204"),
+                            Id = new Guid("b5874943-ee56-4663-87a0-77f847d77620"),
                             Nome = "Fortaleza",
                             UF = " CE"
                         },
                         new
                         {
-                            Id = new Guid("46698f17-4273-4e5c-a56d-dda97d426f26"),
+                            Id = new Guid("08906fbb-421e-4ae6-9670-56e6814a262c"),
                             Nome = "Brasília",
                             UF = "DF"
                         },
                         new
                         {
-                            Id = new Guid("439a8192-2f0f-43a7-8a2c-ee9bbbd6c4d3"),
+                            Id = new Guid("57a0f4ea-c572-4553-a31c-8d6deadf22b4"),
                             Nome = "Vitória",
                             UF = "ES"
                         },
                         new
                         {
-                            Id = new Guid("bb824c5c-a427-4a95-a7b4-f8183f3f8e94"),
+                            Id = new Guid("5e176139-b363-4c4e-9cab-1a85ec76af95"),
                             Nome = "Goiânia",
                             UF = "GO"
                         },
                         new
                         {
-                            Id = new Guid("18e191f0-eef9-4451-bea1-de5f78d125f8"),
+                            Id = new Guid("73479c53-030c-48ee-bcd2-09c93559a93c"),
                             Nome = "São Luís",
                             UF = "MA"
                         },
                         new
                         {
-                            Id = new Guid("588c12b7-703c-4944-b5ba-0fbed191eb02"),
+                            Id = new Guid("fe394f1b-2706-4a4d-b370-e36077352178"),
                             Nome = "Cuiabá",
                             UF = "MT"
                         },
                         new
                         {
-                            Id = new Guid("72b8cfd2-617d-435e-8f79-6e6e46aac155"),
+                            Id = new Guid("0969291f-626e-46f5-9bf4-6ebfcf384790"),
                             Nome = "Campo Grande",
                             UF = "MS"
                         },
                         new
                         {
-                            Id = new Guid("4b4077ab-47f7-44b6-bf44-56f03ca18532"),
+                            Id = new Guid("23af394f-2680-48d2-932d-5ac7b680fd38"),
                             Nome = "Belo Horizonte",
                             UF = "MG"
                         },
                         new
                         {
-                            Id = new Guid("e7d03670-5d06-40dd-a4d8-41c4fe49a994"),
+                            Id = new Guid("849efd2f-dabb-4d2d-9866-7ed35b58fa23"),
                             Nome = "Belém",
                             UF = "PA"
                         },
                         new
                         {
-                            Id = new Guid("eff2ddee-6df9-4d52-80b7-1e4b1164e343"),
+                            Id = new Guid("07af457d-199a-4045-9533-4d2b0e357681"),
                             Nome = "João Pessoa",
                             UF = "PB"
                         },
                         new
                         {
-                            Id = new Guid("dc5ff91b-68d1-4759-9dba-4ade4bd4740d"),
+                            Id = new Guid("4f4d8f48-5037-4710-9cdf-749cfb42eb90"),
                             Nome = "Curitiba",
                             UF = "PR"
                         },
                         new
                         {
-                            Id = new Guid("653fcdce-73b1-47ac-9e98-a5380bec8788"),
+                            Id = new Guid("9573c60c-ba06-4910-b438-9f1f9d3f1827"),
                             Nome = "Recife",
                             UF = "PE"
                         },
                         new
                         {
-                            Id = new Guid("0a8e109c-ee00-40d6-9a01-040618746f2f"),
+                            Id = new Guid("351891a2-f6e6-4ede-a3fa-a2773d123501"),
                             Nome = "Teresina",
                             UF = "PI"
                         },
                         new
                         {
-                            Id = new Guid("6756d8f6-3f78-4886-91dd-e4753f9e72bc"),
+                            Id = new Guid("d314c3b8-a648-4684-a522-57694bd737ac"),
                             Nome = "Rio de Janeiro",
                             UF = "RJ"
                         },
                         new
                         {
-                            Id = new Guid("f8e6890f-e0d0-46ec-8f34-292de4b1f83b"),
+                            Id = new Guid("94e712df-86cb-4bbf-84e6-e911cc5d3848"),
                             Nome = "Natal",
                             UF = "RN"
                         },
                         new
                         {
-                            Id = new Guid("ec209ffa-37ea-4587-8bc6-8afe7cd00042"),
+                            Id = new Guid("6a259e95-33ae-4dbe-b635-52a5b1a77c59"),
                             Nome = "Porto Alegre",
                             UF = "RS"
                         },
                         new
                         {
-                            Id = new Guid("0a8248d1-3b62-4fb7-afc8-955b1c8ebc61"),
+                            Id = new Guid("803d647c-3692-4f5e-892c-0ad180ee14f2"),
                             Nome = "Porto Velho",
                             UF = "RO"
                         },
                         new
                         {
-                            Id = new Guid("c04bb270-65a7-4577-bd4c-631fa931d0e2"),
+                            Id = new Guid("0aa6bba4-c912-4b63-8cde-bffb6171a12f"),
                             Nome = "Boa Vista",
                             UF = "RR"
                         },
                         new
                         {
-                            Id = new Guid("a71ac957-1859-49b7-aa65-cc9327f4a3ce"),
+                            Id = new Guid("ec71ecf7-c864-4931-b254-3e0256cb4b4c"),
                             Nome = "Florianópolis",
                             UF = "SC"
                         },
                         new
                         {
-                            Id = new Guid("c215fc2e-bcda-4404-8efb-4b23c4433c5b"),
+                            Id = new Guid("a9a4beb1-4833-4fbe-a139-0d19cbe26824"),
                             Nome = "São Paulo",
                             UF = "SP"
                         },
                         new
                         {
-                            Id = new Guid("7d73f17e-90d6-4230-a391-31520365ca67"),
+                            Id = new Guid("5da1966b-84d9-4d9a-8593-a198f5c05200"),
                             Nome = "Aracaju",
                             UF = "SE"
                         },
                         new
                         {
-                            Id = new Guid("6ab3cbd8-bcdf-4287-bee3-5885fb656d08"),
+                            Id = new Guid("2ccdc070-71e1-48ab-a33a-a9618f4cc505"),
                             Nome = "Palmas",
                             UF = "TO"
                         });
+                });
+
+            modelBuilder.Entity("Fretefy.Test.Domain.Entities.Regiao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Nome")
+                        .IsUnique();
+
+                    b.ToTable("Regioes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("e1d73569-aa71-4714-9e81-799eb8e7d6f7"),
+                            Nome = "Norte"
+                        },
+                        new
+                        {
+                            Id = new Guid("546abf40-52fb-4b1a-9e76-b08770debe85"),
+                            Nome = "Nordeste"
+                        },
+                        new
+                        {
+                            Id = new Guid("d9e62971-792f-489a-a4e0-5c20b399a55d"),
+                            Nome = "Centro-Oeste"
+                        },
+                        new
+                        {
+                            Id = new Guid("4cca1172-3e05-4930-b7b6-e9c21e78678c"),
+                            Nome = "Sudeste"
+                        },
+                        new
+                        {
+                            Id = new Guid("77f50d80-699e-42c1-9cd0-5ab1b9bafded"),
+                            Nome = "Sul"
+                        });
+                });
+
+            modelBuilder.Entity("Fretefy.Test.Domain.Entities.RegiaoCidade", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("CidadeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("RegiaoId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CidadeId");
+
+                    b.HasIndex("RegiaoId", "CidadeId")
+                        .IsUnique();
+
+                    b.ToTable("RegiaoCidades");
+                });
+
+            modelBuilder.Entity("Fretefy.Test.Domain.Entities.RegiaoCidade", b =>
+                {
+                    b.HasOne("Fretefy.Test.Domain.Entities.Cidade", "Cidade")
+                        .WithMany("RegiaoCidades")
+                        .HasForeignKey("CidadeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Fretefy.Test.Domain.Entities.Regiao", "Regiao")
+                        .WithMany("RegiaoCidades")
+                        .HasForeignKey("RegiaoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cidade");
+
+                    b.Navigation("Regiao");
+                });
+
+            modelBuilder.Entity("Fretefy.Test.Domain.Entities.Cidade", b =>
+                {
+                    b.Navigation("RegiaoCidades");
+                });
+
+            modelBuilder.Entity("Fretefy.Test.Domain.Entities.Regiao", b =>
+                {
+                    b.Navigation("RegiaoCidades");
                 });
 #pragma warning restore 612, 618
         }

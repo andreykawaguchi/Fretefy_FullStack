@@ -12,6 +12,8 @@ namespace Fretefy.Test.Infra.EntityFramework.Mappings
             builder.Property(p => p.Nome).HasMaxLength(1024).IsRequired();
             builder.Property(p => p.UF).HasMaxLength(2).IsRequired();
 
+            // Relacionamento através da tabela RegiaoCidade será configurado no RegiaoCidadeMap
+
             builder.HasData(
                 new Cidade("Rio Branco", "AC"),
                 new Cidade("Maceió", "AL"),

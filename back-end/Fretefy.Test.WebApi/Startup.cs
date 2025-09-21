@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -15,12 +16,19 @@ namespace Fretefy.Test.WebApi
 {
     public class Startup
     {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<DbContext, TestDbContext>();
             services.AddDbContext<TestDbContext>((provider, options) =>
             {
-                options.UseSqlite("Data Source=Data\\Test.db");
+                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             ConfigureInfraService(services);
@@ -33,11 +41,14 @@ namespace Fretefy.Test.WebApi
         private void ConfigureDomainService(IServiceCollection services)
         {
             services.AddScoped<ICidadeService, CidadeService>();
+            services.AddScoped<IRegiaoService, RegiaoService>();
         }
 
         private void ConfigureInfraService(IServiceCollection services)
         {
             services.AddScoped<ICidadeRepository, CidadeRepository>();
+            services.AddScoped<IRegiaoRepository, RegiaoRepository>();
+            services.AddScoped<IRegiaoCidadeRepository, RegiaoCidadeRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
