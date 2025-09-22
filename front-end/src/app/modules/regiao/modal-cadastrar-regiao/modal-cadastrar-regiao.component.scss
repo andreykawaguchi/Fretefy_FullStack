@@ -1,0 +1,74 @@
+.mat-form-field {
+  margin-top: 8px;
+}
+
+.regiao-form {
+  .full-width {
+    width: 100%;
+  }
+
+  .cidades-section {
+    margin-top: 12px;
+
+    .section-label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .cidade-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+
+      .cidade-input {
+        flex: 1 1 auto;
+      }
+    }
+
+    .add-cidade {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+
+      .nova-cidade-input {
+        flex: 1 1 auto;
+      }
+
+      .btn-adicionar {
+        flex: 0 0 auto;
+      }
+    }
+
+    .hint-limit {
+      color: #d32f2f;
+      margin-top: 6px;
+      display: block;
+    }
+  }
+
+  /* Responsive breakpoints - stack on narrow screens */
+  @media (max-width: 480px) {
+    .cidades-section {
+      .cidade-item {
+        flex-direction: column;
+        align-items: stretch;
+
+        .cidade-input {
+          width: 100%;
+        }
+      }
+
+      .add-cidade {
+        flex-direction: column;
+        align-items: stretch;
+
+        .btn-adicionar {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

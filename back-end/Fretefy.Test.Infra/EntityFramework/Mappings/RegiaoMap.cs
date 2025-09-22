@@ -10,15 +10,16 @@ namespace Fretefy.Test.Infra.EntityFramework.Mappings
         {
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Nome).HasMaxLength(100).IsRequired();
+            builder.Property(p => p.Ativo).IsRequired();
             
             builder.HasIndex(p => p.Nome).IsUnique();
 
             builder.HasData(
-                new Regiao("Norte"),
-                new Regiao("Nordeste"),
-                new Regiao("Centro-Oeste"),
-                new Regiao("Sudeste"),
-                new Regiao("Sul")
+                new Regiao("Norte") { },
+                new Regiao("Nordeste") { },
+                new Regiao("Centro-Oeste") { },
+                new Regiao("Sudeste") { },
+                new Regiao("Sul") { }
             );
         }
     }

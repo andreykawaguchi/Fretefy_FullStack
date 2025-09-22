@@ -22,27 +22,25 @@ namespace Fretefy.Test.Domain.Services
         public Regiao Add(Regiao regiao)
         {
             ValidarNomeUnico(regiao.Nome);
-            var regiaoAdicionada = _regiaoRepository.Add(regiao);
-            
-            // Adicionar relacionamentos com cidades se existirem
-            foreach (var regiaoCidade in regiao.RegiaoCidades)
+
+            if (regiao.RegiaoCidades != null && regiao.RegiaoCidades.GroupBy(rc => rc.CidadeId).Any(g => g.Count() > 1))
             {
-                _regiaoCidadeRepository.Add(regiaoCidade);
+                throw new DomainException("A lista de cidades contém itens duplicados.");
             }
-            
+
+            var regiaoAdicionada = _regiaoRepository.Add(regiao);
+
             return regiaoAdicionada;
         }
 
         public void Delete(Guid id)
         {
-            // Primeiro remove os relacionamentos
             var relacionamentos = _regiaoCidadeRepository.GetByRegiaoId(id);
             foreach (var relacionamento in relacionamentos)
             {
                 _regiaoCidadeRepository.Delete(relacionamento.Id);
             }
-            
-            // Depois remove a regi�o
+
             _regiaoRepository.Delete(id);
         }
 
@@ -58,14 +56,72 @@ namespace Fretefy.Test.Domain.Services
 
         public Regiao Update(Regiao regiao)
         {
+            // Validate that the region exists
+            var existingRegiao = _regiaoRepository.Get(regiao.Id);
+            if (existingRegiao == null)
+            {
+                throw new DomainException("Região não encontrada.");
+            }
+
             ValidarNomeUnico(regiao.Nome, regiao.Id);
-            return _regiaoRepository.Update(regiao);
+
+            // Check for duplicate cities in the incoming data
+            if (regiao.RegiaoCidades != null && regiao.RegiaoCidades.GroupBy(rc => rc.CidadeId).Any(g => g.Count() > 1))
+            {
+                throw new DomainException("A lista de cidades contém itens duplicados.");
+            }
+
+            // Update the scalar properties first
+            var updatedRegiao = _regiaoRepository.Update(regiao);
+            if (updatedRegiao == null)
+            {
+                throw new DomainException("Falha ao atualizar a região.");
+            }
+
+            // Handle relationship changes separately
+            UpdateRegiaoCidadeRelationships(regiao.Id, regiao.RegiaoCidades);
+
+            // Return the updated region with fresh data
+            return _regiaoRepository.Get(regiao.Id);
+        }
+
+        private void UpdateRegiaoCidadeRelationships(Guid regiaoId, ICollection<RegiaoCidade> novasRegiaoCidades)
+        {
+            // Get current relationships
+            var relacionamentosAtuais = _regiaoCidadeRepository.GetByRegiaoId(regiaoId).ToList();
+            var cidadesAtuais = relacionamentosAtuais.Select(rc => rc.CidadeId).ToList();
+
+            // Get incoming city IDs
+            var cidadesNovas = novasRegiaoCidades?.Select(rc => rc.CidadeId).Distinct().ToList() ?? new List<Guid>();
+
+            // Remove relationships that are no longer needed
+            var cidadesParaRemover = cidadesAtuais.Except(cidadesNovas).ToList();
+            foreach (var cidadeId in cidadesParaRemover)
+            {
+                var relacionamento = relacionamentosAtuais.FirstOrDefault(rc => rc.CidadeId == cidadeId);
+                if (relacionamento != null)
+                {
+                    _regiaoCidadeRepository.Delete(relacionamento.Id);
+                }
+            }
+
+            // Add new relationships
+            var cidadesParaAdicionar = cidadesNovas.Except(cidadesAtuais).ToList();
+            foreach (var cidadeId in cidadesParaAdicionar)
+            {
+                // Check if relationship already exists (to avoid unique constraint violations)
+                if (!_regiaoCidadeRepository.ExisteRelacionamento(regiaoId, cidadeId))
+                {
+                    var novoRelacionamento = new RegiaoCidade(regiaoId, cidadeId);
+                    _regiaoCidadeRepository.Add(novoRelacionamento);
+                }
+            }
         }
 
         public void AdicionarCidadeNaRegiao(Guid regiaoId, Guid cidadeId)
         {
             if (_regiaoCidadeRepository.ExisteRelacionamento(regiaoId, cidadeId))
-                throw new DomainException("Esta cidade j� est� associada a esta regi�o.");
+                throw new DomainException("Esta cidade já está associada a esta região.");
 
             var regiaoCidade = new RegiaoCidade(regiaoId, cidadeId);
             _regiaoCidadeRepository.Add(regiaoCidade);
@@ -80,6 +136,22 @@ namespace Fretefy.Test.Domain.Services
         {
             var relacionamentos = _regiaoCidadeRepository.GetByRegiaoId(regiaoId);
             return relacionamentos.Select(rc => rc.Cidade);
+        }
+
+        public void Ativar(Guid id)
+        {
+            var regiao = _regiaoRepository.Get(id);
+            if (regiao == null) throw new DomainException("Região não encontrada.");
+            regiao.Ativar();
+            _regiaoRepository.Update(regiao);
+        }
+
+        public void Desativar(Guid id)
+        {
+            var regiao = _regiaoRepository.Get(id);
+            if (regiao == null) throw new DomainException("Região não encontrada.");
+            regiao.Desativar();
+            _regiaoRepository.Update(regiao);
         }
 
         private void ValidarNomeUnico(string nome)

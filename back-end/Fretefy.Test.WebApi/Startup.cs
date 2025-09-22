@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using AutoMapper;
 
 namespace Fretefy.Test.WebApi
 {
@@ -33,6 +34,20 @@ namespace Fretefy.Test.WebApi
 
             ConfigureInfraService(services);
             ConfigureDomainService(services);
+
+            // AutoMapper
+            services.AddAutoMapper(typeof(Mapping.AutoMapperProfile));
+
+            // Add CORS policy to allow the Angular dev server to call the API
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngular", builder =>
+                {
+                    builder.WithOrigins("http://localhost:4200")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
+            });
 
             services.AddMvc()
                 .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest);
@@ -59,6 +74,9 @@ namespace Fretefy.Test.WebApi
             }
 
             app.UseRouting();
+
+            // Enable CORS for requests matching the policy
+            app.UseCors("AllowAngular");
 
             app.UseEndpoints(endpoints =>
             {

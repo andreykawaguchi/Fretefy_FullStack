@@ -1,0 +1,157 @@
+.content {
+  margin: 20px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+}
+
+/* Column-specific styling */
+.col-nome {
+  /* Give 'Nome' more space */
+  width: 50%;
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.col-cidades {
+  width: auto;
+}
+
+.col-ativo,
+.col-actions {
+  width: 1%; /* allow to shrink to content */
+  white-space: nowrap;
+}
+
+/* Align toggle and actions to the right edge */
+.cell-center-right {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.cell-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+/* Make sure header cells align too */
+th.col-ativo,
+th.col-actions {
+  text-align: center;
+}
+
+/* Small screens: reduce Nome width so actions still fit */
+@media (max-width: 600px) {
+  .col-nome {
+    width: 60%;
+    max-width: 60%;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.error {
+  color: #f44336;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #f44336;
+  border-radius: 4px;
+  background-color: #ffebee;
+}
+
+/* Expandable rows styling */
+.example-table {
+  width: 100%;
+}
+
+.example-element-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.example-expanded-row {
+  background-color: rgba(63, 81, 181, 0.08);
+}
+
+.example-detail-row {
+  height: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.cidades-container {
+  padding: 16px;
+  background-color: #fafafa;
+  border-left: 4px solid #3f51b5;
+  margin: 8px 0;
+  width: 100%;
+
+  h4 {
+    margin: 0 0 12px 0;
+    color: #3f51b5;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
+.cidades-list {
+  .mat-chip-list {
+    margin: 0;
+  }
+
+  .mat-chip {
+    margin: 4px 4px 4px 0;
+    font-size: 12px;
+    min-height: 24px;
+
+    .uf {
+      font-style: italic;
+      opacity: 0.8;
+    }
+  }
+
+  .cidade-item {
+    display: inline-block;
+    background-color: #e0e0e0;
+    padding: 4px 8px;
+    margin: 2px;
+    border-radius: 16px;
+    font-size: 12px;
+
+    .uf {
+      font-style: italic;
+      opacity: 0.8;
+    }
+  }
+}
+
+.no-cidades {
+  margin: 0;
+  color: #666;
+  font-style: italic;
+  font-size: 14px;
+}

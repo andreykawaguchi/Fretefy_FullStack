@@ -14,5 +14,7 @@ namespace Fretefy.Test.Domain.Interfaces
         void AdicionarCidadeNaRegiao(Guid regiaoId, Guid cidadeId);
         void RemoverCidadeDaRegiao(Guid regiaoId, Guid cidadeId);
         IEnumerable<Cidade> GetCidadesPorRegiao(Guid regiaoId);
+        void Ativar(Guid id);
+        void Desativar(Guid id);
     }
 }

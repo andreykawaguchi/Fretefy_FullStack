@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>{{ (data && data.regiao) ? 'Editar Região' : 'Nova Região' }}</h2>
+
+<form mat-dialog-content [formGroup]="form" class="regiao-form">
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Nome</mat-label>
+    <input matInput formControlName="nome" [disabled]="data?.readOnly" />
+    <mat-error *ngIf="form.controls.nome.hasError('required')">Nome é obrigatório</mat-error>
+    <mat-error *ngIf="form.controls.nome.hasError('maxLength')">Nome muito longo</mat-error>
+  </mat-form-field>
+
+  <!-- Cidades (máximo 2) using FormArray -->
+  <div class="cidades-section" formArrayName="cidadesSelecionadas">
+    <label class="section-label">Cidades (máx. 2)</label>
+
+    <div *ngFor="let control of cidadesControls(); let i = index" class="cidade-item">
+      <mat-form-field appearance="outline" class="cidade-input">
+        <mat-select [formControlName]="i" placeholder="Selecione uma cidade" [disabled]="data?.readOnly">
+          <mat-option *ngFor="let c of availableCidades(i)" [value]="c.id">{{ c.nome }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('cidadesSelecionadas')?.hasError('duplicate')">A mesma cidade não pode ser selecionada duas vezes</mat-error>
+      </mat-form-field>
+        <button *ngIf="!data?.readOnly" mat-icon-button color="warn" (click)="removeCidade(i)" aria-label="Remover cidade">
+          <mat-icon>delete</mat-icon>
+        </button>
+    </div>
+
+    <div class="add-cidade" *ngIf="cidadesControls().length < 2 && !data?.readOnly">
+      <button mat-raised-button color="primary" class="btn-adicionar" (click)="addCidade()">Adicionar</button>
+    </div>
+
+  </div>
+
+  <mat-error *ngIf="form.get('cidadesSelecionadas')?.hasError('minCidades') && (form.get('cidadesSelecionadas')?.touched || form.touched)">
+    Selecione ao menos 1 cidade
+  </mat-error>
+</form>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button *ngIf="!data?.readOnly" mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid || isSaving || form.get('cidadesSelecionadas')?.hasError('minCidades')">
+    <mat-progress-spinner *ngIf="isSaving" mode="indeterminate" diameter="20"></mat-progress-spinner>
+    <span *ngIf="!isSaving">Salvar</span>
+  </button>
+</div>

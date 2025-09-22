@@ -10,6 +10,7 @@ namespace Fretefy.Test.Domain.Entities
         public Regiao()
         {
             RegiaoCidades = new List<RegiaoCidade>();
+            Ativo = true;
         }
 
         public Regiao(string nome) : this()
@@ -21,6 +22,8 @@ namespace Fretefy.Test.Domain.Entities
         public Guid Id { get; set; }
 
         public string Nome { get; private set; }
+
+        public bool Ativo { get; private set; }
 
         public ICollection<RegiaoCidade> RegiaoCidades { get; set; }
 
@@ -55,6 +58,16 @@ namespace Fretefy.Test.Domain.Entities
             {
                 RegiaoCidades.Remove(regiaoCidade);
             }
+        }
+
+        public void Ativar()
+        {
+            Ativo = true;
+        }
+
+        public void Desativar()
+        {
+            Ativo = false;
         }
     }
 }

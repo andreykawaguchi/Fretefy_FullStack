@@ -1,8 +1,11 @@
-﻿using Fretefy.Test.Domain.Entities;
+﻿using AutoMapper;
+using Fretefy.Test.Domain.Entities;
 using Fretefy.Test.Domain.Interfaces;
+using Fretefy.Test.WebApi.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Fretefy.Test.WebApi.Controllers
 {
@@ -11,10 +14,12 @@ namespace Fretefy.Test.WebApi.Controllers
     public class CidadeController : ControllerBase
     {
         private readonly ICidadeService _cidadeService;
+        private readonly IMapper _mapper;
 
-        public CidadeController(ICidadeService cidadeService)
+        public CidadeController(ICidadeService cidadeService, IMapper mapper)
         {
             _cidadeService = cidadeService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -29,14 +34,20 @@ namespace Fretefy.Test.WebApi.Controllers
             else
                 cidades = _cidadeService.List();
 
-            return Ok(cidades);
+            var result = cidades.Select(c => _mapper.Map<CidadeDto>(c));
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
-            var cidades = _cidadeService.Get(id);
-            return Ok(cidades);
+            var cidade = _cidadeService.Get(id);
+            if (cidade == null) return NotFound();
+
+            var dto = _mapper.Map<CidadeDto>(cidade);
+
+            return Ok(dto);
         }
     }
 }

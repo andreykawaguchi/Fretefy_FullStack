@@ -9,16 +9,19 @@ namespace Fretefy.Test.Infra.EntityFramework.Repositories
 {
     public class RegiaoRepository : IRegiaoRepository
     {
+        private readonly DbContext _context;
         private DbSet<Regiao> _dbSet;
 
         public RegiaoRepository(DbContext dbContext)
         {
+            _context = dbContext;
             _dbSet = dbContext.Set<Regiao>();
         }
 
         public Regiao Add(Regiao regiao)
         {
             _dbSet.Add(regiao);
+            _context.SaveChanges();
             return regiao;
         }
 
@@ -26,23 +29,53 @@ namespace Fretefy.Test.Infra.EntityFramework.Repositories
         {
             var entity = _dbSet.Find(id);
             if (entity != null)
+            {
                 _dbSet.Remove(entity);
+                _context.SaveChanges();
+            }
         }
 
         public Regiao Get(Guid id)
         {
-            return _dbSet.Find(id);
+            return _dbSet
+                .Include(r => r.RegiaoCidades)
+                    .ThenInclude(rc => rc.Cidade)
+                .FirstOrDefault(r => r.Id == id);
         }
 
         public IQueryable<Regiao> List()
         {
-            return _dbSet.AsQueryable();
+            return _dbSet
+                .Include(r => r.RegiaoCidades)
+                    .ThenInclude(rc => rc.Cidade)
+                .AsQueryable();
         }
 
         public Regiao Update(Regiao regiao)
         {
-            _dbSet.Update(regiao);
-            return regiao;
+            var existing = _dbSet.Find(regiao.Id);
+            if (existing == null)
+            {
+                return null;
+            }
+
+            existing.SetNome(regiao.Nome);
+            
+            if (existing.Ativo != regiao.Ativo)
+            {
+                if (regiao.Ativo)
+                {
+                    existing.Ativar();
+                }
+                else
+                {
+                    existing.Desativar();
+                }
+            }
+
+            _context.SaveChanges();
+            
+            return Get(regiao.Id);
         }
 
         public bool ExisteComNome(string nome)
