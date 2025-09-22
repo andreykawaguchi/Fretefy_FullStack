@@ -33,16 +33,6 @@ export class RegiaoService {
     return this.http.get<PagedResult<RegiaoDto>>(`${this.base}/paged`, { params });
   }
 
-  // GET /api/regiao/{id} - Obter região específica
-  getById(id: string): Observable<RegiaoDto> {
-    return this.http.get<RegiaoDto>(`${this.base}/${id}`);
-  }
-
-  // GET /api/regiao/{id}/cidades - Obter cidades de uma região
-  getCidades(id: string): Observable<Cidade[]> {
-    return this.http.get<Cidade[]>(`${this.base}/${id}/cidades`);
-  }
-
   // POST /api/regiao - Criar região
   create(regiao: CreateRegiaoInput): Observable<RegiaoDto> {
     return this.http.post<RegiaoDto>(this.base, regiao, this.jsonOptions);
@@ -68,20 +58,8 @@ export class RegiaoService {
     return this.http.post<void>(`${this.base}/${id}/desativar`, null);
   }
 
-  // POST /api/regiao/{regiaoId}/cidades/{cidadeId} - Associar cidade à região
-  associateCidade(regiaoId: string, cidadeId: string): Observable<void> {
-    return this.http.post<void>(`${this.base}/${regiaoId}/cidades/${cidadeId}`, null);
-  }
-
-  // DELETE /api/regiao/{regiaoId}/cidades/{cidadeId} - Desassociar cidade da região
-  disassociateCidade(regiaoId: string, cidadeId: string): Observable<void> {
-    return this.http.delete<void>(`${this.base}/${regiaoId}/cidades/${cidadeId}`);
-  }
-
-  // GET /api/regiao/export - Exportar todas as regiões em Excel
-  // Retorna um blob com o conteúdo do arquivo e headers com nome (Content-Disposition)
-  export(): Observable<any> {
-    // observe: 'response' para ter acesso aos headers
-    return this.http.get(`${this.base}/export`, { responseType: 'blob' as 'json', observe: 'response' as 'body' });
+  export(sortBy?: string | null, sortDirection?: string | null): Observable<any> {
+    const params = buildPaginationParams(undefined, undefined, sortBy, sortDirection);
+    return this.http.get(`${this.base}/export`, { params, responseType: 'blob' as 'json', observe: 'response' as 'body' });
   }
 }

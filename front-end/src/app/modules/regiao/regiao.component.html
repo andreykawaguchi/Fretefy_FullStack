@@ -54,6 +54,9 @@
             <button mat-icon-button color="accent" aria-label="Editar" (click)="$event.stopPropagation(); onEdit(row)">
               <mat-icon>edit</mat-icon>
             </button>
+            <button mat-icon-button color="warn" aria-label="Excluir" (click)="$event.stopPropagation(); onDelete(row)">
+              <mat-icon>delete</mat-icon>
+            </button>
           </div>
         </td>
       </ng-container>

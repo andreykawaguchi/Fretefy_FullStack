@@ -18,8 +18,8 @@ import { HttpResponse } from '@angular/common/http';
   styleUrls: ['./regiao.component.scss'],
   animations: [
     trigger('detailExpand', [
-      state('collapsed', style({height: '0px', minHeight: '0'})),
-      state('expanded', style({height: '*'})),
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
   ]
@@ -36,14 +36,14 @@ export class RegiaoComponent implements OnInit {
   isLoading = false;
   error: string | null = null;
 
-  displayedColumns: string[] = ['nome', 'cidades', 'ativo',  'actions'];
+  displayedColumns: string[] = ['nome', 'cidades', 'ativo', 'actions'];
   dataSource: RegiaoDto[] = [];
   expandedElement: RegiaoDto | null = null;
 
   constructor(
     private regiaoService: RegiaoService
-    ,private dialog: MatDialog
-    ,private snackBar: MatSnackBar
+    , private dialog: MatDialog
+    , private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -73,9 +73,7 @@ export class RegiaoComponent implements OnInit {
     });
   }
 
-  // sortBy: 'nome' | 'cidades' | undefined
   sortBy: string | null = 'nome';
-  // sortDirection: 'asc' | 'desc' | undefined
   sortDirection: string | null = 'asc';
 
   getRegioes(page: number = 1, pageSize: number = this.pageSize) {
@@ -105,9 +103,9 @@ export class RegiaoComponent implements OnInit {
   onSortChange(sortState: Sort) {
     if (!sortState) return;
     this.sortBy = sortState.active || null;
-    // Angular MatSort uses 'asc' | 'desc' | ''
+
     this.sortDirection = sortState.direction && sortState.direction.length > 0 ? sortState.direction : null;
-    // reload first page with new sort
+
     this.getRegioes(1, this.pageSize);
   }
 
@@ -141,6 +139,27 @@ export class RegiaoComponent implements OnInit {
     });
   }
 
+  onDelete(regiao: RegiaoDto) {
+    if (!regiao || !regiao.id) return;
+
+    const confirmed = window.confirm(`Confirma excluir a região "${regiao.nome}"?`);
+    if (!confirmed) return;
+
+    this.isLoading = true;
+    this.regiaoService.delete(String(regiao.id)).subscribe({
+      next: () => {
+        this.snackBar.open('Região excluída', 'Fechar', { duration: 2000 });
+
+        this.getRegioes(1, this.pageSize);
+      },
+      error: (err) => {
+        console.error(err);
+        this.snackBar.open((err && err.error && err.error.message) ? err.error.message : 'Erro ao excluir região', 'Fechar', { duration: 4000 });
+        this.isLoading = false;
+      }
+    });
+  }
+
   isExpansion = (index: number, row: RegiaoDto) => {
     return row === this.expandedElement;
   }
@@ -156,7 +175,6 @@ export class RegiaoComponent implements OnInit {
     const filenameMatch = /filename\*=UTF-8''([^;\n]+)/i.exec(contentDisposition) || /filename="?([^";]+)"?/i.exec(contentDisposition);
     if (filenameMatch && filenameMatch.length > 1) {
       try {
-        // decode RFC5987 encoded filename* if present
         const raw = filenameMatch[1];
         return decodeURIComponent(raw);
       } catch (e) {
@@ -168,7 +186,8 @@ export class RegiaoComponent implements OnInit {
 
   export() {
     this.isLoading = true;
-    this.regiaoService.export().subscribe({
+
+    this.regiaoService.export(this.sortBy, this.sortDirection).subscribe({
       next: (res: HttpResponse<Blob>) => {
         try {
           const contentDisposition = res && (res as any).headers ? (res as any).headers.get('content-disposition') : null;

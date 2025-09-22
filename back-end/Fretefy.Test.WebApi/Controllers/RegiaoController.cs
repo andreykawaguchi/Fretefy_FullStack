@@ -41,28 +41,7 @@ namespace Fretefy.Test.WebApi.Controllers
             var total = all.Count;
             var totalPages = (int)Math.Ceiling((double)total / pageSize);
 
-            IEnumerable<Regiao> ordered;
-            var dirDesc = string.Equals(sortDirection, "desc", StringComparison.OrdinalIgnoreCase);
-            switch ((sortBy ?? "").ToLowerInvariant())
-            {
-                case "nome":
-                    ordered = dirDesc ? all.OrderByDescending(r => r.Nome) : all.OrderBy(r => r.Nome);
-                    break;
-                case "cidade":
-                    // Order by the first cidade's Nome (if any), fallback to empty string
-                    if (dirDesc)
-                    {
-                        ordered = all.OrderByDescending(r => (_regiaoService.GetCidadesPorRegiao(r.Id)?.FirstOrDefault()?.Nome) ?? string.Empty);
-                    }
-                    else
-                    {
-                        ordered = all.OrderBy(r => (_regiaoService.GetCidadesPorRegiao(r.Id)?.FirstOrDefault()?.Nome) ?? string.Empty);
-                    }
-                    break;
-                default:
-                    ordered = dirDesc ? all.OrderByDescending(r => r.Nome) : all.OrderBy(r => r.Nome);
-                    break;
-            }
+            var ordered = ApplyOrdering(all, sortBy, sortDirection);
 
             var items = ordered.Skip((page - 1) * pageSize).Take(pageSize)
                 .Select(r => _mapper.Map<RegiaoDto>(r));
@@ -77,43 +56,18 @@ namespace Fretefy.Test.WebApi.Controllers
                     pageSize,
                     totalPages,
                     sortBy,
-                    sortDirection = dirDesc ? "desc" : "asc"
+                    sortDirection = sortDirection == "desc" ? "desc" : "asc"
                 }
             };
 
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
-        {
-            var regiao = _regiaoService.Get(id);
-            if (regiao == null) return NotFound();
-
-            var dto = _mapper.Map<RegiaoDto>(regiao);
-
-            return Ok(dto);
-        }
-
-        [HttpGet("{id}/cidades")]
-        public IActionResult GetCidades(Guid id)
-        {
-            try
-            {
-                var cidades = _regiaoService.GetCidadesPorRegiao(id);
-                var result = _mapper.Map<IEnumerable<CidadeDto>>(cidades);
-                return Ok(result);
-            }
-            catch (DomainException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
         [HttpGet("export")]
-        public IActionResult ExportExcel()
+        public IActionResult ExportExcel([FromQuery] string sortBy = "nome", [FromQuery] string sortDirection = "asc")
         {
-            var regioes = _regiaoService.List().ToList();
+            var all = _regiaoService.List().ToList();
+            var regioes = ApplyOrdering(all, sortBy, sortDirection).ToList();
 
             using (var workbook = new XLWorkbook())
             {
@@ -157,21 +111,8 @@ namespace Fretefy.Test.WebApi.Controllers
 
                 var created = _regiaoService.Add(regiao);
                 var dto = _mapper.Map<RegiaoDto>(created);
-                return CreatedAtAction(nameof(Get), new { id = created.Id }, dto);
-            }
-            catch (DomainException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
 
-        [HttpPost("{regiaoId}/cidades/{cidadeId}")]
-        public IActionResult AdicionarCidade(Guid regiaoId, Guid cidadeId)
-        {
-            try
-            {
-                _regiaoService.AdicionarCidadeNaRegiao(regiaoId, cidadeId);
-                return Ok(new { message = "Cidade adicionada à região com sucesso." });
+                return Created(string.Empty, dto);
             }
             catch (DomainException ex)
             {
@@ -193,7 +134,7 @@ namespace Fretefy.Test.WebApi.Controllers
                 var updated = _regiaoService.Update(regiao);
                 if (updated == null)
                 {
-                    return NotFound(new { message = "Região não encontrada." });
+                    return NotFound(new { message = "Regiï¿½o nï¿½o encontrada." });
                 }
 
                 var dto = _mapper.Map<RegiaoDto>(updated);
@@ -205,7 +146,7 @@ namespace Fretefy.Test.WebApi.Controllers
             }
             catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException ex)
             {
-                return Conflict(new { message = "A região foi modificada por outro usuário. Tente novamente.", details = ex.Message });
+                return Conflict(new { message = "A regiï¿½o foi modificada por outro usuï¿½rio. Tente novamente.", details = ex.Message });
             }
             catch (Exception ex)
             {
@@ -220,27 +161,13 @@ namespace Fretefy.Test.WebApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{regiaoId}/cidades/{cidadeId}")]
-        public IActionResult RemoverCidade(Guid regiaoId, Guid cidadeId)
-        {
-            try
-            {
-                _regiaoService.RemoverCidadeDaRegiao(regiaoId, cidadeId);
-                return Ok(new { message = "Cidade removida da região com sucesso." });
-            }
-            catch (DomainException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
         [HttpPost("{id}/ativar")]
         public IActionResult Ativar(Guid id)
         {
             try
             {
                 _regiaoService.Ativar(id);
-                return Ok(new { message = "Região ativada com sucesso." });
+                return Ok(new { message = "Regiï¿½o ativada com sucesso." });
             }
             catch (DomainException ex)
             {
@@ -254,11 +181,30 @@ namespace Fretefy.Test.WebApi.Controllers
             try
             {
                 _regiaoService.Desativar(id);
-                return Ok(new { message = "Região desativada com sucesso." });
+                return Ok(new { message = "Regiï¿½o desativada com sucesso." });
             }
             catch (DomainException ex)
             {
                 return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // Shared ordering helper used by ListPaged and ExportExcel
+        private IEnumerable<Regiao> ApplyOrdering(IEnumerable<Regiao> source, string sortBy, string sortDirection)
+        {
+            var list = source?.ToList() ?? new List<Regiao>();
+            var dirDesc = string.Equals(sortDirection, "desc", StringComparison.OrdinalIgnoreCase);
+
+            switch ((sortBy ?? "").ToLowerInvariant())
+            {
+                case "nome":
+                    return dirDesc ? list.OrderByDescending(r => r.Nome) : list.OrderBy(r => r.Nome);
+                case "cidade":
+                    return dirDesc
+                        ? list.OrderByDescending(r => (_regiaoService.GetCidadesPorRegiao(r.Id)?.FirstOrDefault()?.Nome) ?? string.Empty)
+                        : list.OrderBy(r => (_regiaoService.GetCidadesPorRegiao(r.Id)?.FirstOrDefault()?.Nome) ?? string.Empty);
+                default:
+                    return dirDesc ? list.OrderByDescending(r => r.Nome) : list.OrderBy(r => r.Nome);
             }
         }
     }
