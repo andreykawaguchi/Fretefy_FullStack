@@ -10,7 +10,6 @@ namespace Fretefy.Test.Infra.EntityFramework.Mappings
         {
             builder.HasKey(rc => rc.Id);
 
-            // Configurar relacionamentos
             builder.HasOne(rc => rc.Regiao)
                    .WithMany(r => r.RegiaoCidades)
                    .HasForeignKey(rc => rc.RegiaoId)
@@ -21,7 +20,6 @@ namespace Fretefy.Test.Infra.EntityFramework.Mappings
                    .HasForeignKey(rc => rc.CidadeId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            // Criar índice único para evitar duplicação de relacionamento
             builder.HasIndex(rc => new { rc.RegiaoId, rc.CidadeId }).IsUnique();
         }
     }

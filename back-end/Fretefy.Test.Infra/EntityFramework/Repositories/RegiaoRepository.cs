@@ -80,12 +80,12 @@ namespace Fretefy.Test.Infra.EntityFramework.Repositories
 
         public bool ExisteComNome(string nome)
         {
-            return _dbSet.Any(r => r.Nome.ToLower() == nome.ToLower());
+            return _dbSet.Any(r => r.Nome.Trim().ToLower() == nome.Trim().ToLower());
         }
 
         public bool ExisteComNome(string nome, Guid idExcluir)
         {
-            return _dbSet.Any(r => r.Nome.ToLower() == nome.ToLower() && r.Id != idExcluir);
+            return _dbSet.Any(r => r.Nome.Trim().ToLower() == nome.Trim().ToLower() && r.Id != idExcluir);
         }
     }
 }

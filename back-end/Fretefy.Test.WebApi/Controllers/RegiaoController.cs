@@ -189,7 +189,6 @@ namespace Fretefy.Test.WebApi.Controllers
             }
         }
 
-        // Shared ordering helper used by ListPaged and ExportExcel
         private IEnumerable<Regiao> ApplyOrdering(IEnumerable<Regiao> source, string sortBy, string sortDirection)
         {
             var list = source?.ToList() ?? new List<Regiao>();

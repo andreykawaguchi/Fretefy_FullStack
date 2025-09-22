@@ -9,7 +9,6 @@ namespace Fretefy.Test.WebApi.Mapping
     {
         public AutoMapperProfile()
         {
-            // Domain -> DTO
             CreateMap<Cidade, CidadeDto>();
 
             CreateMap<Regiao, RegiaoDto>()
@@ -20,7 +19,6 @@ namespace Fretefy.Test.WebApi.Mapping
                 .ForMember(dest => dest.RegiaoNome, opt => opt.MapFrom(src => src.Regiao != null ? src.Regiao.Nome : null))
                 .ForMember(dest => dest.CidadeNome, opt => opt.MapFrom(src => src.Cidade != null ? src.Cidade.Nome : null));
 
-            // Input DTOs -> Domain
             CreateMap<RegiaoCidadeInputDto, RegiaoCidade>()
                 .ConstructUsing(src => new RegiaoCidade(System.Guid.Empty, src.CidadeId));
 

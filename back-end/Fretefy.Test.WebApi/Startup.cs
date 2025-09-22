@@ -35,15 +35,14 @@ namespace Fretefy.Test.WebApi
             ConfigureInfraService(services);
             ConfigureDomainService(services);
 
-            // AutoMapper
             services.AddAutoMapper(typeof(Mapping.AutoMapperProfile));
 
-            // Add CORS policy to allow the Angular dev server to call the API
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAngular", builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200")
+                    //builder.WithOrigins("http://localhost:4200")
+                    builder.AllowAnyOrigin()
                            .AllowAnyHeader()
                            .AllowAnyMethod();
                 });
@@ -75,7 +74,6 @@ namespace Fretefy.Test.WebApi
 
             app.UseRouting();
 
-            // Enable CORS for requests matching the policy
             app.UseCors("AllowAngular");
 
             app.UseEndpoints(endpoints =>

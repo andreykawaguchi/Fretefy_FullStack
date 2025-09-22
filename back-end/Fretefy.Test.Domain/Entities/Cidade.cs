@@ -23,7 +23,6 @@ namespace Fretefy.Test.Domain.Entities
 
         public string UF { get; set; }
 
-        // Relation to Regiao through RegiaoCidade (many-to-many relationship)
         public ICollection<RegiaoCidade> RegiaoCidades { get; set; }
     }
 }
