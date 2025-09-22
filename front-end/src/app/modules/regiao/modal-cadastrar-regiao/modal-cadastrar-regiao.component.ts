@@ -1,11 +1,13 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl, AbstractControl, ValidatorFn } from '@angular/forms';
 import { RegiaoDto } from 'src/app/Dtos/RegiaoDto';
 import { CreateRegiaoInput, UpdateRegiaoInput } from 'src/app/Dtos/RegiaoInputDto';
 import { CidadeDto } from 'src/app/Dtos/CidadeDto';
 import { CidadeService } from 'src/app/services/cidade.service';
-import { RegiaoService } from 'src/app/services/regiao.service';
+import { Inject } from '@angular/core';
+import { REGIAO_REPOSITORY } from '../domain/tokens';
+import { IRegiaoRepository } from '../domain/iregiao.repository';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
@@ -24,7 +26,7 @@ export class ModalCadastrarRegiaoComponent {
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<ModalCadastrarRegiaoComponent>,
     private cidadeService: CidadeService,
-    private regiaoService: RegiaoService,
+    @Inject(REGIAO_REPOSITORY) private regiaoRepository: IRegiaoRepository,
     private snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) public data: { regiao?: RegiaoDto, readOnly?: boolean }
   ) {
@@ -104,11 +106,11 @@ export class ModalCadastrarRegiaoComponent {
     };
     this.isSaving = true;
 
-      if (this.data && this.data.regiao && this.data.regiao.id) {
+    if (this.data && this.data.regiao && this.data.regiao.id) {
       // update
       const id = (this.data.regiao.id as any);
       const updatePayload: UpdateRegiaoInput = Object.assign({ id: String(id) }, payload);
-      this.regiaoService.update(id, updatePayload).subscribe({
+      this.regiaoRepository.update(id, updatePayload).subscribe({
         next: () => {
           this.isSaving = false;
           this.snackBar.open('Região atualizada com sucesso', 'Fechar', { duration: 3000 });
@@ -120,9 +122,9 @@ export class ModalCadastrarRegiaoComponent {
           this.snackBar.open((err && err.error.message) ? err.error.message : 'Erro ao atualizar região', 'Fechar', { duration: 4000 });
         }
       });
-      } else {
+    } else {
       // create
-      this.regiaoService.create(payload).subscribe({
+      this.regiaoRepository.create(payload).subscribe({
         next: (created) => {
           this.isSaving = false;
           this.snackBar.open('Região criada com sucesso', 'Fechar', { duration: 3000 });

@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { HomeModule } from './modules/home/home.module';
 import { ToolbarModule } from './components/toolbar/toolbar.module';
 import { RouterModule } from '@angular/router';
-import { RegiaoService } from './services/regiao.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './shared/material.module';
 import { CidadeService } from './services/cidade.service';
@@ -28,7 +27,7 @@ import { CidadeService } from './services/cidade.service';
 
     BrowserAnimationsModule,
   ],
-  providers: [RegiaoService, CidadeService],
+  providers: [CidadeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

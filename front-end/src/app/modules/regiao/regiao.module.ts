@@ -5,6 +5,8 @@ import { ModalCadastrarRegiaoComponent } from './modal-cadastrar-regiao/modal-ca
 import { RegiaoRoutingModule } from './regiao.routing';
 import { MaterialModule } from '../../shared/material.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { REGIAO_REPOSITORY } from './domain/tokens';
+import { RegiaoApiRepository } from './infrastructure/regiao-api.repository';
 
 @NgModule({
   imports: [
@@ -15,6 +17,9 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     FormsModule,
   ],
   declarations: [RegiaoComponent, ModalCadastrarRegiaoComponent],
-  exports: [RegiaoComponent]
+  exports: [RegiaoComponent],
+  providers: [
+    { provide: REGIAO_REPOSITORY, useClass: RegiaoApiRepository },
+  ]
 })
 export class RegiaoModule { }

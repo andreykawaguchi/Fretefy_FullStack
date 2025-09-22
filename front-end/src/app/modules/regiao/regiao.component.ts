@@ -2,7 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { RegiaoDto } from 'src/app/Dtos/RegiaoDto';
 import { CidadeDto } from 'src/app/Dtos/CidadeDto';
-import { RegiaoService } from 'src/app/services/regiao.service';
+import { Inject } from '@angular/core';
+import { REGIAO_REPOSITORY } from './domain/tokens';
+import { IRegiaoRepository } from './domain/iregiao.repository';
 import { PagedResult } from 'src/app/Dtos/paged-result.model';
 import { Pagination } from 'src/app/Dtos/pagination.model';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -41,9 +43,9 @@ export class RegiaoComponent implements OnInit {
   expandedElement: RegiaoDto | null = null;
 
   constructor(
-    private regiaoService: RegiaoService
-    , private dialog: MatDialog
-    , private snackBar: MatSnackBar
+    @Inject(REGIAO_REPOSITORY) private regiaoRepository: IRegiaoRepository,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -58,7 +60,7 @@ export class RegiaoComponent implements OnInit {
     const original = regiao.ativo;
     regiao.ativo = novoValor;
 
-    const obs = novoValor ? this.regiaoService.ativar(id) : this.regiaoService.desativar(id);
+    const obs = novoValor ? this.regiaoRepository.ativar(id) : this.regiaoRepository.desativar(id);
 
     obs.subscribe({
       next: () => {
@@ -79,13 +81,12 @@ export class RegiaoComponent implements OnInit {
   getRegioes(page: number = 1, pageSize: number = this.pageSize) {
     this.isLoading = true;
     this.error = null;
-    this.regiaoService.paged(page, pageSize, this.sortBy, this.sortDirection).subscribe({
+    this.regiaoRepository.paged(page, pageSize, this.sortBy, this.sortDirection).subscribe({
       next: (result: PagedResult<RegiaoDto>) => {
         this.regioes = (result && result.items) ? result.items : [];
         this.pagination = result && result.pagination ? result.pagination : null;
         this.dataSource = this.regioes;
         if (this.pagination) {
-
           this.pageIndex = (this.pagination.page && this.pagination.page > 0) ? this.pagination.page - 1 : 0;
           this.pageSize = this.pagination.pageSize || this.pageSize;
           this.totalItems = this.pagination.total || 0;
@@ -146,7 +147,7 @@ export class RegiaoComponent implements OnInit {
     if (!confirmed) return;
 
     this.isLoading = true;
-    this.regiaoService.delete(String(regiao.id)).subscribe({
+    this.regiaoRepository.delete(String(regiao.id)).subscribe({
       next: () => {
         this.snackBar.open('Região excluída', 'Fechar', { duration: 2000 });
 
@@ -187,7 +188,7 @@ export class RegiaoComponent implements OnInit {
   export() {
     this.isLoading = true;
 
-    this.regiaoService.export(this.sortBy, this.sortDirection).subscribe({
+    this.regiaoRepository.export(this.sortBy, this.sortDirection).subscribe({
       next: (res: HttpResponse<Blob>) => {
         try {
           const contentDisposition = res && (res as any).headers ? (res as any).headers.get('content-disposition') : null;

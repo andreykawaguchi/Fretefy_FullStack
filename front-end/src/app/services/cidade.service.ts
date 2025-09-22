@@ -13,10 +13,6 @@ export class CidadeService {
   private apiUrl = environment && (environment as any).apiUrl ? (environment as any).apiUrl : '/api';
   private base = `${this.apiUrl}/cidade`;
 
-  private jsonOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-  };
-
   constructor(private http: HttpClient) { }
 
   list(): Observable<Cidade[]> {
